@@ -45,7 +45,9 @@ function GetFrameView(centerPoint: Point2D, zoomLevel: number): FrameView {
 
 
 let center: Point2D = {x: 300, y: 200};
-let currentZoom = 0.1;
+const initialZoom = 0.75;
+const maxZoom = 5;
+let currentZoom = initialZoom;
 let frameView = GetFrameView(center, currentZoom);
 
 
@@ -68,7 +70,7 @@ const ShaderUniforms = {
     positionTexture: gl.getUniformLocation(glProgram, "positionTexture")
 }
 
-let dataPoints = GetRandomPoints({x: 300, y: 200}, 200, 2, 5, 1e6);
+let dataPoints = GetRandomPoints({x: 300, y: 200}, 200, 2, 5, 2e6);
 const {texture: dataTexture, width, height} = createTextureFromArray(gl, dataPoints, gl.TEXTURE0, 4);
 console.log(dataPoints.length);
 console.log(width);
@@ -78,12 +80,17 @@ gl.uniform1i(ShaderUniforms.numVertices, dataPoints.length / 3);
 
 
 let prevTimestamp: number = undefined;
+let autoplay = false;
 
 canvas.onwheel = (ev => {
     const dy = ev.deltaY;
     currentZoom -= 0.005 * dy;
     currentZoom = Math.max(0.00, currentZoom);
 });
+
+canvas.onclick = () => {
+    autoplay = !autoplay;
+}
 
 
 function render(t: number) {
@@ -93,9 +100,11 @@ function render(t: number) {
     }
     prevTimestamp = t;
 
-    currentZoom += 0.001 * dt;
-    if (currentZoom > 10) {
-        currentZoom = 1;
+    if (autoplay) {
+        currentZoom += 0.001 * dt;
+        if (currentZoom > maxZoom) {
+            currentZoom = initialZoom;
+        }
     }
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
