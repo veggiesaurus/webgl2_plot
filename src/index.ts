@@ -1,9 +1,10 @@
-import {compileShader, createProgram, createTextureFromArray} from "./util/webgl";
+import {Point2D} from "./models/Point2d";
+import {add2D, scale2D, subtract2D} from "./util/math2d";
+import {createProgram, createTextureFromArray} from "./util/webgl";
 
 import fragSrc from "raw-loader!./frag.glsl";
 import vertSrc from "raw-loader!./vert.glsl";
-import {Point2D} from "./models/Point2d";
-import {add2D, scale2D, subtract2D} from "./util/math2d";
+
 
 type FrameView = { min: Point2D, max: Point2D };
 
