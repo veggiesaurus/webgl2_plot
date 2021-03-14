@@ -5,7 +5,6 @@ import {createProgram, createTextureFromArray} from "./util/webgl";
 import fragSrc from "raw-loader!./frag.glsl";
 import vertSrc from "raw-loader!./vert.glsl";
 
-
 type FrameView = { min: Point2D, max: Point2D };
 
 enum ShapeType {
@@ -16,8 +15,8 @@ enum ShapeType {
     Cycled
 }
 
-const lineThickness = 1.0;
 let shapeType = ShapeType.Cycled;
+const lineThickness = 1.0 * devicePixelRatio;
 
 //const numDataPoints = 500;
 //const pointSizeRange = [40, 100];
@@ -28,10 +27,10 @@ const pointSizeRange = [4, 10];
 const initialZoom = 1.0;
 const imageSize: Point2D = {x: 1200, y: 800};
 const canvas = document.getElementById("gl-canvas") as HTMLCanvasElement;
-canvas.width = 1200;
-canvas.height = 800;
-canvas.style.width = `${canvas.width}px`;
-canvas.style.height = `${canvas.height}px`
+canvas.width = 1200 * devicePixelRatio;
+canvas.height = 800 * devicePixelRatio;
+canvas.style.width = `${canvas.width / devicePixelRatio}px`;
+canvas.style.height = `${canvas.height / devicePixelRatio}px`
 
 const frameTimeElement = document.getElementById("frame-time");
 
@@ -42,7 +41,7 @@ function GetRandomPoints(centerPoint: Point2D, w: number, h: number, sizeMin: nu
         data[i * 4] = centerPoint.x + (Math.random() - 0.5) * w;
         data[i * 4 + 1] = centerPoint.y + (Math.random() - 0.5) * h;
         // Random size in range [sizeMin, sizeMax]
-        data[i * 4 + 2] = Math.random() * (sizeMax - sizeMin) + sizeMin;
+        data[i * 4 + 2] = devicePixelRatio * (Math.random() * (sizeMax - sizeMin) + sizeMin);
         // Random colourmap value in range [0, 1]
         data[i * 4 + 3] = Math.random();
     }
@@ -64,7 +63,7 @@ let currentZoom = initialZoom;
 let frameView = GetFrameView(center, currentZoom);
 
 
-const gl = canvas.getContext("webgl2", {premultipliedAlpha: false}) as WebGL2RenderingContext;
+const gl = canvas.getContext("webgl2", {premultipliedAlpha: false, antialias: true}) as WebGL2RenderingContext;
 gl.viewport(0, 0, canvas.width, canvas.height);
 const webglPointSizeRange = gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE) as Float32Array;
 console.log(`Can render points with pixel sizes from ${webglPointSizeRange[0]} to ${webglPointSizeRange[1]}`);
