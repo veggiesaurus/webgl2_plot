@@ -13,9 +13,6 @@ in vec4 v_colour;
 in float v_pointSize;
 out vec4 outColor;
 
-
-
-
 float lenSquared(vec2 a) {
     return dot(a, a);
 }
@@ -50,11 +47,13 @@ void main() {
         break;
     }
 
+    // Blending
+    // outColor = vec4(v_colour.xyz, shouldDrawPoint ? 1.0 : 0.0);
+
+    // Discarding
     if (shouldDrawPoint) {
         outColor = v_colour;
     } else {
-        // For blending
-        // outColor = vec4(0, 0, 0, 0.1);
         discard;
     }
 }
