@@ -62,8 +62,7 @@ const maxZoom = 5;
 let currentZoom = initialZoom;
 let frameView = GetFrameView(center, currentZoom);
 
-
-const gl = canvas.getContext("webgl2", {premultipliedAlpha: false, antialias: true}) as WebGL2RenderingContext;
+const gl = canvas.getContext("webgl2", {premultipliedAlpha: false}) as WebGL2RenderingContext;
 gl.viewport(0, 0, canvas.width, canvas.height);
 const webglPointSizeRange = gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE) as Float32Array;
 console.log(`Can render points with pixel sizes from ${webglPointSizeRange[0]} to ${webglPointSizeRange[1]}`);
