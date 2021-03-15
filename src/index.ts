@@ -15,15 +15,15 @@ enum ShapeType {
     Cycled
 }
 
-let shapeType = ShapeType.BoxFilled;
-const lineThickness = 1.0 * devicePixelRatio;
-const featherWidth = 2 * devicePixelRatio;
+let shapeType = ShapeType.Cycled;
+const lineThickness = 2.0 * devicePixelRatio;
+const featherWidth = 1.0 * devicePixelRatio;
 
-//const numDataPoints = 500;
-//const pointSizeRange = [40, 100];
+const numDataPoints = 500;
+const pointSizeRange = [40, 100];
 // For Benchmarking
-const numDataPoints = 2e6;
-const pointSizeRange = [4, 10];
+// const numDataPoints = 2e6;
+// const pointSizeRange = [4, 10];
 
 const initialZoom = 1.0;
 const imageSize: Point2D = {x: 1200, y: 800};

@@ -45,7 +45,7 @@ void main() {
     } else {
         v_pointSize = size;
     }
-    gl_PointSize = v_pointSize + featherWidth * 0.5;
+    gl_PointSize = v_pointSize + featherWidth;
     v_colour = vec4(hsv2rgb(vec3(cmapVal, 0.5, 1.0)), 1.0);
 
 }
