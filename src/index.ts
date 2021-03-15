@@ -15,13 +15,14 @@ enum ShapeType {
     Cycled
 }
 
-let shapeType = ShapeType.Cycled;
+let shapeType = ShapeType.BoxFilled;
 const lineThickness = 1.0 * devicePixelRatio;
+const featherWidth = 2 * devicePixelRatio;
 
 //const numDataPoints = 500;
 //const pointSizeRange = [40, 100];
 // For Benchmarking
-const numDataPoints = 10e6;
+const numDataPoints = 2e6;
 const pointSizeRange = [4, 10];
 
 const initialZoom = 1.0;
@@ -76,6 +77,7 @@ const ShaderUniforms = {
     numVertices: gl.getUniformLocation(glProgram, "numVertices"),
     zoomLevel: gl.getUniformLocation(glProgram, "zoomLevel"),
     lineThickness: gl.getUniformLocation(glProgram, "lineThickness"),
+    featherWidth: gl.getUniformLocation(glProgram, "featherWidth"),
     shapeType: gl.getUniformLocation(glProgram, "shapeType"),
     scalePointsWithZoom: gl.getUniformLocation(glProgram, "scalePointsWithZoom"),
     frameViewMin: gl.getUniformLocation(glProgram, "frameViewMin"),
@@ -121,8 +123,8 @@ function render(t: number) {
     }
 
     // For alpha blending (soft lines)
-    // gl.enable(gl.BLEND);
-    // gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     frameView = GetFrameView(center, currentZoom);
@@ -130,6 +132,7 @@ function render(t: number) {
     gl.uniform2f(ShaderUniforms.frameViewMax, frameView.max.x, frameView.max.y);
     gl.uniform1f(ShaderUniforms.zoomLevel, currentZoom);
     gl.uniform1f(ShaderUniforms.lineThickness, lineThickness);
+    gl.uniform1f(ShaderUniforms.featherWidth, featherWidth);
     gl.uniform1i(ShaderUniforms.scalePointsWithZoom, 0);
 
 
