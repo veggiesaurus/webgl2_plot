@@ -9,6 +9,13 @@ uniform float featherWidth;
 #define BOX_LINED 1
 #define CIRCLE_FILLED 2
 #define CIRCLE_LINED 3
+#define HEXAGON_FILLED 4
+#define HEXAGON_LINED 5
+
+#define SIN_60 0.86602540378
+#define COS_60 0.5
+
+mat2 rot60 = mat2(COS_60, -SIN_60, SIN_60, COS_60);
 
 in vec4 v_colour;
 in float v_pointSize;
@@ -43,6 +50,46 @@ float featherRangeSquare(vec2 r, float rMin, float rMax) {
     return (alpha.x * alpha.y) * (1.0 - (alpha2.x * alpha2.y));
 }
 
+// Calculates the minimum distance to a hexagon of a given radius
+float distHex(vec2 r, float radius) {
+    float height = radius * SIN_60;
+    // Compare two sides at a time
+    float dist = max(r.y - height, -height - r.y);
+    for (int i = 0; i < 2; i++) {
+        // Rotate by 60 degrees
+        r*= rot60;
+        float currentDist = max(r.y - height, -height - r.y);
+        dist = max(dist, currentDist);
+    }
+    return dist;
+}
+
+vec2 distHex(vec2 r, vec2 radius) {
+    vec2 height = radius * SIN_60;
+    // Compare two sides at a time
+    vec2 dist = max(r.y - height, -height - r.y);
+    for (int i = 0; i < 2; i++) {
+        // Rotate by 60 degrees
+        r*= rot60;
+        vec2 currentDist = max(r.y - height, -height - r.y);
+        dist = max(dist, currentDist);
+    }
+    return dist;
+}
+
+float featherRangeHex(vec2 r, float rMax) {
+    float maxDist = distHex(r, rMax);
+    float v = (featherWidth - maxDist) / (2.0 * featherWidth);
+    return smoothstep(0.0, 1.0, v);
+}
+
+float featherRangeHex(vec2 r, float rMin, float rMax) {
+    vec2 maxDist = distHex(r, vec2(rMax, rMin));
+    vec2 v = (featherWidth - maxDist) / (2.0 * featherWidth);
+    vec2 alpha = smoothstep(0.0, 1.0, v);
+    return alpha.x * (1.0 - alpha.y);
+}
+
 void main() {
     vec2 posPixelSpace = (0.5 - gl_PointCoord) * (v_pointSize + featherWidth);
 
@@ -62,6 +109,12 @@ void main() {
         break;
         case CIRCLE_LINED:
         alpha = featherRange(posPixelSpace, rMin, rMax);
+        break;
+        case HEXAGON_FILLED:
+        alpha = featherRangeHex(posPixelSpace, rMax);
+        break;
+        case HEXAGON_LINED:
+        alpha = featherRangeHex(posPixelSpace, rMin, rMax);
         break;
     }
 

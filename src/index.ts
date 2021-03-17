@@ -12,6 +12,8 @@ enum ShapeType {
     BoxLined,
     CircleFilled,
     CircleLined,
+    HexagonFilled,
+    HexagonLined,
     Cycled
 }
 
@@ -138,7 +140,7 @@ function render(t: number) {
 
     // Cycle through shape types
     if (shapeType === ShapeType.Cycled) {
-        gl.uniform1i(ShaderUniforms.shapeType, t / 2000 % 4.0);
+        gl.uniform1i(ShaderUniforms.shapeType, t / 2000 % 6.0);
     } else {
         gl.uniform1i(ShaderUniforms.shapeType, shapeType);
     }
