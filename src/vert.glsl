@@ -5,6 +5,7 @@ uniform int numVertices;
 uniform vec2 frameViewMin;
 uniform vec2 frameViewMax;
 uniform float zoomLevel;
+uniform float featherWidth;
 uniform bool scalePointsWithZoom;
 uniform sampler2D positionTexture;
 
@@ -12,6 +13,7 @@ out vec4 v_colour;
 out float v_pointSize;
 
 #define PI radians(180.0)
+
 
 vec4 getValueByIndexFromTexture(sampler2D texture, int index) {
     ivec2 size = textureSize(texture, 0);
@@ -43,7 +45,7 @@ void main() {
     } else {
         v_pointSize = size;
     }
-    gl_PointSize = v_pointSize;
+    gl_PointSize = v_pointSize + featherWidth;
     v_colour = vec4(hsv2rgb(vec3(cmapVal, 0.5, 1.0)), 1.0);
 
 }
